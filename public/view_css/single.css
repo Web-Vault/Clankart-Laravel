@@ -1,0 +1,572 @@
+.container {
+        width: 60%;
+        /* border-radius: 8px; */
+        overflow: hidden;
+        padding: 20px;
+        display: flex;
+}
+
+.product-img {
+        width: 30%;
+}
+
+.image-section {
+        text-align: center;
+        margin-bottom: 20px;
+}
+
+.image-section img {
+        width: 70%;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.image-thumbnails {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+}
+
+.image-thumbnails img {
+        width: 15%;
+        margin: 0 5px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.3s ease;
+}
+
+.image-thumbnails img:hover {
+        transform: scale(1.1);
+}
+
+/*  */
+
+.content {
+        padding: 20px;
+        border-top: 1px solid #e0e0e0;
+        width: 70%;
+}
+
+.content h1 {
+        font-size: 28px;
+        margin: 0;
+        color: #333;
+}
+
+.content .price {
+        font-size: 24px;
+        color: #e60023;
+        margin: 10px 0;
+}
+
+.content .old-price {
+        text-decoration: line-through;
+        color: #888;
+        margin-left: 10px;
+        font-size: 18px;
+}
+
+.content .availability {
+        color: #28a745;
+        margin: 10px 0;
+        font-weight: bold;
+}
+
+.content .info {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 20px;
+}
+
+.content .info p {
+        margin: 5px 0;
+}
+
+.content button {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 18px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin: 10px 0;
+        width: 100%;
+        text-align: center;
+}
+
+.content button:hover {
+        background-color: #0056b3;
+}
+
+/*  */
+
+.details {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        border-top: 1px solid #e0e0e0;
+        padding-top: 20px;
+}
+
+.details div {
+        width: 45%;
+}
+
+.details label {
+        font-weight: bold;
+        color: #333;
+}
+
+.details p {
+        margin: 5px 0;
+        color: #555;
+}
+
+.chat-button {
+        margin-top: 20px;
+        text-align: center;
+        display: flex;
+}
+
+.chat-button a {
+        background-color: #17a2b8;
+        color: #fff;
+        border: none;
+        text-decoration: none;
+        padding: 10px 20px;
+        margin: 0 10px;
+        font-size: 18px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+}
+
+.chat-button a:hover {
+        background-color: #117a8b;
+}
+
+/*  */
+
+.description-container {
+        width: 100%;
+        border-radius: 8px;
+        overflow: hidden;
+        padding: 20px;
+        margin-top: 20px;
+}
+
+.description {
+        display: flex;
+        justify-content: space-between;
+}
+
+.description .left,
+.description .right {
+        width: 45%;
+}
+
+.description h2 {
+        font-size: 22px;
+        color: #333;
+}
+
+.description p {
+        font-size: 16px;
+        color: #555;
+        margin: 10px 0;
+}
+
+.description .community {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #888;
+}
+
+.description .community a {
+        color: #007bff;
+        text-decoration: none;
+}
+
+.description .community a:hover {
+        text-decoration: underline;
+}
+
+.description .ad-info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #888;
+}
+
+.description .ad-info span {
+        display: flex;
+        align-items: center;
+}
+
+.description .ad-info .views {
+        margin-left: 10px;
+}
+
+.description .ad-info .views::before {
+        content: '\1F441';
+        /* eye icon */
+        margin-right: 5px;
+}
+
+.description .seller-info {
+        display: flex;
+        align-items: center;
+}
+
+.description .seller-info img {
+        border-radius: 50%;
+        margin-right: 10px;
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+}
+
+.description .seller-info .verified {
+        color: #28a745;
+        margin-left: 10px;
+}
+
+.description .visit-profile {
+        margin-top: 20px;
+        text-align: center;
+}
+
+.description .visit-profile a {
+        background-color: #17a2b8;
+        color: #fff;
+        border: none;
+        text-decoration: none;
+        padding: 10px 20px;
+        font-size: 18px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+}
+
+.description .visit-profile a:hover {
+        background-color: #117a8b;
+}
+
+/* review */
+
+
+.reviews-section {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
+}
+
+.section-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+}
+
+.review-card {
+        border-bottom: 1px solid #ddd;
+        padding: 15px 0;
+}
+
+.review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+}
+
+.reviewer-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: #555;
+        margin: 0;
+}
+
+.rating {
+        display: flex;
+}
+
+.star {
+        font-size: 18px;
+        color: #ddd; /* Gray for unfilled stars */
+}
+
+.star.filled {
+        color: #f4c542; /* Yellow for filled stars */
+}
+
+.review-date {
+        font-size: 14px;
+        color: #888;
+        margin-top: 4px;
+}
+
+.review-text {
+        font-size: 16px;
+        color: #444;
+        margin: 10px 0 0;
+}
+
+
+
+/* Media Query for Tablets and Smaller Devices */
+@media (max-width: 1024px) {
+        .nothing {}
+
+        .container {
+                  width: 80%;
+                  flex-direction: column;
+                  padding: 10px;
+        }
+
+        .product-img {
+                  width: 100%;
+                  margin-bottom: 20px;
+        }
+
+        .image-section img {
+                  width: 90%;
+        }
+
+        .image-thumbnails {
+                  flex-wrap: wrap;
+                  justify-content: flex-start;
+        }
+
+        .image-thumbnails img {
+                  width: 25%;
+                  margin: 5px;
+        }
+
+        .content {
+                  width: 100%;
+                  padding: 15px;
+        }
+
+        .content h1 {
+                  font-size: 24px;
+        }
+
+        .content .price {
+                  font-size: 20px;
+        }
+
+        .content .old-price {
+                  font-size: 16px;
+        }
+
+        .content .availability {
+                  font-size: 16px;
+        }
+
+        .content .info {
+                  font-size: 14px;
+        }
+
+        .content button {
+                  font-size: 16px;
+        }
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 768px) {
+        .nothing {}
+
+        .container {
+                  width: 95%;
+                  padding: 5px;
+        }
+
+        .product-img {
+                  width: 100%;
+                  margin-bottom: 10px;
+        }
+
+        .image-section img {
+                  width: 100%;
+        }
+
+        .image-thumbnails {
+                  flex-direction: row;
+                  align-items: center;
+                  border: 1px solid #ddd;
+                  padding: 3px 1px;
+        }
+
+        .image-thumbnails img {
+                  width: 20%;
+                  margin: 5px auto;
+        }
+
+        .content {
+                  width: 100%;
+                  padding: 10px;
+        }
+
+        .content h1 {
+                  font-size: 20px;
+        }
+
+        .content .price {
+                  font-size: 18px;
+        }
+
+        .content .old-price {
+                  font-size: 14px;
+        }
+
+        .content .availability {
+                  font-size: 14px;
+        }
+
+        .content .info {
+                  font-size: 12px;
+        }
+
+        .content button {
+                  font-size: 14px;
+                  padding: 8px 16px;
+        }
+}
+
+/*  */
+
+/* Media Query for Tablets and Smaller Devices */
+@media (max-width: 1024px) {
+        .noting{}
+        .details {
+                  flex-direction: column;
+                  align-items: center;
+        }
+
+        .details div {
+                  width: 100%;
+                  margin-bottom: 20px;
+        }
+
+        .chat-button {
+                  flex-direction: row;
+                  align-items: center;
+        }
+
+        .chat-button a {
+                  font-size: 16px;
+                  padding: 8px 16px;
+        }
+
+        .description-container {
+                  padding: 15px;
+        }
+
+        .description {
+                  flex-direction: column;
+        }
+
+        .description .left,
+        .description .right {
+                  width: 100%;
+                  margin-bottom: 20px;
+        }
+
+        .description h2 {
+                  font-size: 20px;
+        }
+
+        .description p {
+                  font-size: 14px;
+        }
+
+        .description .community {
+                  font-size: 12px;
+        }
+
+        .description .ad-info {
+                  font-size: 12px;
+        }
+
+        .description .seller-info img {
+                  width: 40px;
+                  height: 40px;
+        }
+
+        .description .visit-profile a {
+                  font-size: 16px;
+                  padding: 8px 16px;
+        }
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 768px) {
+        .nothing{}
+        .details {
+                  flex-direction: column;
+                  align-items: center;
+                  margin-top: 10px;
+        }
+
+        .details div {
+                  width: 100%;
+                  margin-bottom: 15px;
+        }
+
+        .chat-button {
+                  flex-direction: row;
+                  align-items: center;
+        }
+        
+        .chat-button a {
+                  margin: auto;
+                  font-size: 14px;
+                  padding: 8px 12px;
+        }
+
+        .description-container {
+                  padding: 10px;
+        }
+
+        .description {
+                  flex-direction: column;
+        }
+
+        .description .left,
+        .description .right {
+                  width: 100%;
+                  margin-bottom: 15px;
+        }
+
+        .description h2 {
+                  font-size: 18px;
+        }
+
+        .description p {
+                  font-size: 12px;
+        }
+
+        .description .community {
+                  font-size: 10px;
+        }
+
+        .description .ad-info {
+                  font-size: 10px;
+        }
+
+        .description .seller-info img {
+                  width: 30px;
+                  height: 30px;
+        }
+
+        .description .visit-profile a {
+                  font-size: 14px;
+                  padding: 8px 12px;
+        }
+}

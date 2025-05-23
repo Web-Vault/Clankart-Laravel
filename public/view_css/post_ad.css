@@ -1,0 +1,90 @@
+.form-container {
+        margin: 20px auto;
+        padding: 30px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+        color: #333;
+        font-weight: bold;
+}
+
+.upload-instructions,
+.help-text,
+.pricing-help {
+        font-size: 0.95rem;
+        color: #6c757d;
+        line-height: 1.5;
+}
+
+.pricing-help {
+        color: #28a745;
+        font-weight: bold;
+}
+
+.post-ad-button {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #fff;
+        width: 100%;
+        padding: 20px 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, border-color 0.3s;
+}
+
+.post-ad-button:hover {
+        background-color: #e0a800;
+        border-color: #e0a800;
+}
+
+.form-check-inline .form-check-label {
+        margin-right: 15px;
+        font-size: 0.95rem;
+}
+
+.btn-file {
+        position: relative;
+        overflow: hidden;
+}
+
+.btn-file input[type="file"],textarea {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 100px;
+        line-height: 1.5;
+        color: transparent;
+        background: transparent;
+        cursor: pointer;
+        opacity: 0;
+}
+
+
+.form-group {
+        margin-bottom: 20px;
+}
+
+.form-group label {
+        display: block;
+        margin-bottom: 5px;
+}
+
+.email-verified {
+        align-items: center;
+        display: flex;
+        margin-top: 5px;
+}
+
+.email-verified img {
+        height: 16px;
+        margin-right: 5px;
+        width: 16px;
+}

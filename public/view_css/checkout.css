@@ -1,0 +1,316 @@
+.cart-container {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+}
+
+.cart-header {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        /* border-bottom: 1px solid #e0e0e0; */
+        padding-bottom: 10px;
+}
+
+.cart-inner {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+}
+
+.inner-cart-container {
+        background-color: white;
+        /* border: 1px solid #e0e0e0; */
+        border-radius: 8px;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        width: 70%;
+}
+
+.cart-item {
+        display: flex;
+        gap: 20px;
+}
+
+.item-image {
+        width: 33.333%;
+        /* border: 1px solid #555; */
+}
+
+.item-image img {
+        width: 100%;
+        height: auto;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+}
+
+.item-details {
+        flex-grow: 1;
+        width: 33.333%;
+        /* border: 1px solid #555; */
+}
+
+.item-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 10px;
+}
+
+.item-quantity,
+.item-seller {
+        margin-bottom: 10px;
+}
+
+.item-quantity>input {
+        width: 50px;
+}
+
+.item-actions a {
+        margin-right: 20px;
+        color: #007bff;
+        text-decoration: none;
+        font-size: 14px;
+}
+
+.item-actions a:hover {
+        text-decoration: underline;
+}
+
+.price-details {
+        text-align: right;
+        font-size: 14px;
+        width: 33.333%;
+        /* border: 1px solid #555; */
+}
+
+.price-label {
+        font-weight: bold;
+        margin-bottom: 10px;
+}
+
+.total-price-details {
+        background-color: #f9f9f9;
+        /* border: 1px solid #e0e0e0; */
+        border-radius: 8px;
+        padding: 20px;
+        text-align: right;
+        width: 30%;
+}
+
+.price-summary {
+        margin-bottom: 20px;
+}
+
+.summary-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 18px;
+}
+
+.summary-price,
+.summary-shipping,
+.summary-total {
+        margin-bottom: 10px;
+        font-size: 16px;
+}
+
+.secure-payment p {
+        margin: 0;
+        font-size: 14px;
+        color: green;
+}
+
+.checkout-button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: none;
+}
+
+.checkout-button:hover {
+        background-color: #0056b3;
+}
+
+/*  */
+
+/* Media Query for Tablets and Smaller Devices */
+@media (max-width: 1024px) {
+        .nothing {}
+
+        .cart-container {
+                  padding: 15px;
+                  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-header {
+                  font-size: 20px;
+                  margin-bottom: 15px;
+        }
+
+        .cart-inner {
+                  flex-direction: column;
+        }
+
+        .inner-cart-container {
+                  width: 100%;
+                  flex-direction: column;
+                  padding: 15px;
+        }
+
+        .cart-item {
+                  flex-direction: column;
+                  margin-bottom: 15px;
+        }
+
+        .item-image {
+                  width: 100%;
+                  margin-bottom: 10px;
+        }
+
+        .item-image img {
+                  width: 100%;
+                  height: auto;
+        }
+
+        .item-details {
+                  width: 100%;
+        }
+
+        .item-title {
+                  font-size: 16px;
+        }
+
+        .item-quantity,
+        .item-seller {
+                  font-size: 14px;
+        }
+
+        .item-actions a {
+                  font-size: 12px;
+        }
+
+        .price-details {
+                  width: 100%;
+                  text-align: left;
+                  margin-top: 10px;
+        }
+
+        .total-price-details {
+                  width: 100%;
+                  padding: 15px;
+                  font-size: 14px;
+        }
+
+        .summary-title {
+                  font-size: 16px;
+        }
+
+        .summary-price,
+        .summary-shipping,
+        .summary-total {
+                  font-size: 14px;
+        }
+
+        .secure-payment p {
+                  font-size: 12px;
+        }
+
+        .checkout-button {
+                  font-size: 14px;
+                  padding: 8px 16px;
+        }
+}
+
+/* Media Query for Mobile Devices */
+@media (max-width: 768px) {
+        .nothing {}
+
+        .cart-container {
+                  padding: 10px;
+                  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart-header {
+                  font-size: 18px;
+                  margin-bottom: 10px;
+        }
+
+        .cart-inner {
+                  flex-direction: column;
+        }
+
+        .inner-cart-container {
+                  width: 100%;
+                  padding: 10px;
+        }
+
+        .cart-item {
+                  flex-direction: column;
+                  margin-bottom: 10px;
+        }
+
+        .item-image {
+                  width: 100%;
+                  margin-bottom: 5px;
+        }
+
+        .item-image img {
+                  width: 100%;
+                  height: auto;
+        }
+
+        .item-details {
+                  width: 100%;
+        }
+
+        .item-title {
+                  font-size: 14px;
+        }
+
+        .item-quantity,
+        .item-seller {
+                  font-size: 12px;
+        }
+
+        .item-actions a {
+                  font-size: 12px;
+                  margin-right: 10px;
+        }
+
+        .price-details {
+                  width: 100%;
+                  text-align: left;
+                  margin-top: 5px;
+        }
+
+        .total-price-details {
+                  width: 100%;
+                  padding: 10px;
+                  font-size: 12px;
+        }
+
+        .summary-title {
+                  font-size: 14px;
+        }
+
+        .summary-price,
+        .summary-shipping,
+        .summary-total {
+                  font-size: 12px;
+        }
+
+        .secure-payment p {
+                  font-size: 10px;
+        }
+
+        .checkout-button {
+                  width: 100%;
+                  font-size: 12px;
+                  padding: 8px 12px;
+        }
+}

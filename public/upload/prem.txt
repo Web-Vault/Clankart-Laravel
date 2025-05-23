@@ -1,0 +1,5 @@
+password : ShxhR52bGo
+
+
+MySQL DB Name 	MySQL User Name 	      MySQL Password 	                      MySQL Host Name 	
+if0_36437632_hotel	if0_36437632	      pdSSLtjum8vU               	sql310.infinityfree.com

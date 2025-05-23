@@ -1,0 +1,84 @@
+.product-row {
+        padding: 1%;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .product {
+        width: 24%;
+        margin: 1% 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .product img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-bottom: 1px solid black;
+    }
+
+    .desc {
+        padding: 1%;
+    }
+
+    .name {
+        font-variant: small-caps;
+        font-size: large;
+        margin: 10px 0;
+    }
+
+    .price {
+        font-size: x-large;
+        color: #e60000;
+        margin: 5px 0;
+    }
+
+    .info {
+        font-size: large;
+        text-align: right;
+        margin: 5px 0;
+    }
+
+    .purchase a {
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        padding: 10px 20px;
+        margin: 10px;
+        transition: all 0.3s ease;
+        background-color: #0083CA;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .description {
+        font-size: 16px;
+        color: #555;
+        line-height: 1.5;
+        font-weight: 400;
+        margin-bottom: 8px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 2;
+        height: 3.2em;
+    }
+
+    .seller {
+        /* Styling for the seller label */
+        font-size: 14px;
+        color: #777;
+        font-weight: 500;
+        margin-top: 5px;
+        display: inline-block;
+        /* Aligns neatly with other text elements */
+    }
+
+
+    .purchase a:hover {
+        background-color: #286090;
+    }

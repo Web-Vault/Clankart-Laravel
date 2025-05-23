@@ -1,0 +1,70 @@
+.form-group {
+        margin-bottom: 20px;
+}
+
+.form-group label {
+        display: block;
+        margin-bottom: 5px;
+}
+
+.form-group input {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        padding: 20px;
+        width: 100%;
+}
+
+.form-group input[readonly] {
+        background-color: #e9ecef;
+}
+
+.form-actions {
+        display: flex;
+        justify-content: flex-end;
+}
+
+.form-actions button {
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        padding: 10px 20px;
+        margin: 0 10px;
+}
+
+.form-actions .discard {
+        background-color: #6c757d;
+        color: white;
+}
+
+.form-actions .update {
+        transition: 0.3s all ease;
+        background-color: #0083CA;
+        color: white;
+}
+
+.form-actions .update:hover {
+        background-color: #286090;
+        color: white;
+}
+
+.container {
+        max-width: 500px;
+        margin-top: 50px;
+}
+
+.nav-tabs {
+        justify-content: flex-start;
+}
+
+.nav-link {
+        cursor: pointer;
+}
+
+#forgotPasswordForm {
+        display: none;
+}
+
+.tab-content {
+        margin-top: 20px;
+}

@@ -1,0 +1,124 @@
+.review-page {
+    padding: 20px;
+}
+
+.content-wrapper {
+    display: flex;
+    gap: 30px;
+}
+
+.book-info {
+    width: 35%;
+    flex-shrink: 0;
+    padding: 20px;
+    background-color: #f0f7ff;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.book-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.book-title {
+    font-size: 24px;
+    margin: 10px 0;
+    color: #004f8c;
+}
+
+.book-price {
+    font-size: 20px;
+    margin: 10px 0;
+    color: #0078d4;
+}
+
+.book-description {
+    font-size: 16px;
+    color: #555;
+    margin: 10px 0;
+}
+
+.review-form-container {
+    width: 60%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #004f8c;
+}
+
+.rating-section {
+    margin-bottom: 20px;
+}
+
+.rating-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.star-rating {
+    display: flex;
+    justify-content: left;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label.star {
+    font-size: 30px;
+    color: #0078d4;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.star-rating input[type="radio"]:checked ~ label.star,
+.star-rating label.star:hover,
+.star-rating input[type="radio"]:checked ~ label.star:hover {
+    color: #f4c542;
+}
+
+.review-text-section {
+    margin-bottom: 20px;
+}
+
+.review-text-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #0078d4; 
+    font-size: 14px;
+    resize: vertical;
+    color: #333;
+}
+
+.submit-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0078d4;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #005f99; 
+}
