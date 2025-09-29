@@ -85,20 +85,6 @@
                                                   </a>
 
 
-                                                  <a href="{{URL::to('/')}}/chats" class="links">
-                                                            <div class="nav-item p-4 d-flex w-100">
-                                                                      <div class="nav-icon">
-                                                                                <img src="{{URL::to('/')}}/images/chats.png" alt="">
-                                                                      </div>
-                                                                      <div class="nav-name  w-100 align-items-center">
-                                                                                <span class="mx-3 fs-5"> My Chats </span>
-                                                                      </div>
-
-                                                            </div>
-                                                  </a>
-
-
-
                                                   <a href="{{URL::to('/')}}/wishlist" class="links">
                                                             <div class="nav-item p-4 d-flex w-100">
                                                                       <div class="nav-icon">
@@ -116,27 +102,59 @@
                               </div>
 
                               <div class="col-9">
-                                        <p class="p-3 fs-3 border-bottom">My Selling Orders (0) </p>
-
-
+                                        <p class="p-3 fs-3 border-bottom d-flex justify-content-between align-items-center">
+                                            <span>My Selling Orders ({{ isset($orders) ? $orders->count() : 0 }})</span>
+                                            @if(isset($books) && $books->count() > 0)
+                                                <form action="{{ route('selling_orders') }}" method="get" class="d-flex gap-2 align-items-center">
+                                                    <label for="book_id" class="me-2 mb-0"> Book:</label>
+                                                    <select name="book_id" id="book_id" class="form-select" style="min-width: 260px;">
+                                                        <option value="">All Books</option>
+                                                        @foreach($books as $book)
+                                                            <option value="{{ $book->id }}" {{ (isset($selectedBookId) && (string)$selectedBookId === (string)$book->id) ? 'selected' : '' }}>
+                                                                {{ $book->book_title }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    <button type="submit" class="btn btn-outline-primary">Apply</button>
+                                                    <a href="{{ route('selling_orders') }}" class="btn btn-outline-secondary">Reset</a>
+                                                </form>
+                                            @endif
+                                        </p>
 
                                         <div class="cart-inner container w-auto d-flex flex-column">
-
-
-
-
-
-                                                  <img src="{{URL::to('/')}}/images/storeclosed.png" alt="Empty" class=" img m-auto">
-                                                  <p class="p-3 fs-4 m-auto">Sorry, you haven't listed any books for sale yet.</p>
-                                                  <button class="btn btn-primary border-primary d-none mb-5 p-3 my-3 d-md-block border rounded-1 m-auto search-btn">Start Selling now!</button>
-
-
-
-
+                                            @if(isset($orders) && $orders->count() > 0)
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Order Date</th>
+                                                                <th>Book</th>
+                                                                <th>Amount</th>
+                                                                <th>Status</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach($orders as $order)
+                                                                <tr>
+                                                                    <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d M Y, h:i A') }}</td>
+                                                                    <td>{{ $order->book_name }}</td>
+                                                                    <td>₹{{ number_format($order->order_price, 2) }}</td>
+                                                                    <td>
+                                                                        <span class="badge {{ $order->order_status === 'delivered' ? 'bg-success' : ($order->order_status === 'pending' ? 'bg-warning text-dark' : 'bg-secondary') }}">
+                                                                            {{ ucfirst($order->order_status) }}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            @else
+                                                <img src="{{URL::to('/')}}/images/storeclosed.png" alt="Empty" class=" img m-auto">
+                                                <p class="p-3 fs-4 m-auto">No selling orders yet. Your listed books haven't been purchased yet.</p>
+                                                <a href="{{ URL::to('/') }}/post-ad" class="btn btn-primary border-primary mb-5 p-3 my-3 d-md-block border rounded-1 m-auto search-btn">Start Selling now!</a>
+                                            @endif
                                         </div>
-
-
-
                               </div>
 
                     </div>

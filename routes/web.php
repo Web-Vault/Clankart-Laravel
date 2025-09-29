@@ -29,7 +29,8 @@ Route::get('add-to-cart/{id}', [Registrationcontroller::class,'add_cart'])->name
 
 Route::get('/profile', [Registrationcontroller::class,'showProfile'])->name('profile');
 
-Route::get('/update_profile', [Registrationcontroller::class,'update_profile'])->name('update_profile');
+// Update profile should be a POST and accessible to logged-in users (not admin-only)
+Route::post('/update_profile', [Registrationcontroller::class,'update_profile'])->name('update_profile');
 
 Route::get('/ads', [Registrationcontroller::class, 'showAds'])->name('ads');
 
@@ -47,9 +48,7 @@ Route::get('/chats', function () {
 
 Route::get('/chats/{sender}', [Registrationcontroller::class, 'showChats']);
 
-Route::get('/selling-orders', function () {
-    return view('selling-orders');
-});
+Route::get('/selling-orders', [Registrationcontroller::class, 'showSellingOrders'])->name('selling_orders');
 
 
 Route::get('review-book/{book_id}/{order_id}', [Registrationcontroller::class, 'review_book']);
@@ -92,13 +91,14 @@ Route::get('book-category', function () {
     return view('book-category');
 });
 
-Route::post('change-password', function() {
-    return view('profile');
-});
+// Change password should hit the controller action
+Route::post('change-password', [Registrationcontroller::class, 'changePassword'])->name('change_password');
 
 Route::get('logout', [Registrationcontroller::class,'logout'])->name('logout');
 
 Route::get('login', [Registrationcontroller::class, 'login'])->name('login');
+Route::get('register', [Registrationcontroller::class, 'register'])->name('register');
+Route::post('books/{book_id}/stock', [Registrationcontroller::class, 'updateBookStock'])->name('books.update_stock');
 
 Route::post('index', function() {
     return view('index');
@@ -118,6 +118,14 @@ Route::post('indexLogin', [Registrationcontroller::class , 'indexLogin']);
 Route::post('indexSignup', [Registrationcontroller::class , 'indexSignup']);
 Route::post('forgotPassword', [Registrationcontroller::class , 'forgotPassword']);
 Route::get('verifyAccount/{email}/{token}', [Registrationcontroller::class ,'verify_email']);
+
+// OTP-based password reset
+Route::get('password/request', [Registrationcontroller::class, 'showForgotRequest'])->name('password.request_form');
+Route::get('password/verify', [Registrationcontroller::class, 'showForgotVerify'])->name('password.verify_form');
+Route::get('password/reset', [Registrationcontroller::class, 'showForgotReset'])->name('password.reset_form');
+Route::post('password/request-otp', [Registrationcontroller::class, 'requestResetOtp'])->name('password.request_otp');
+Route::post('password/verify-otp', [Registrationcontroller::class, 'verifyResetOtp'])->name('password.verify_otp');
+Route::post('password/reset', [Registrationcontroller::class, 'resetPassword'])->name('password.reset');
 
 
 
@@ -235,7 +243,6 @@ Route::get('remove-user/{id}', [Registrationcontroller::class, 'removeUser'])->m
 Route::get('remove-book/{id}', [Registrationcontroller::class,'removeBook'])->middleware('admin');
 
 Route::post('/sell_book', [Registrationcontroller::class, 'sell_book']);
-Route::post('/update_profile', [Registrationcontroller::class, 'update_profile'])->middleware('admin');
 
 Route::post('/a-add-user', [Registrationcontroller::class, 'addUser'])->middleware('admin');
 Route::post('/add-product', [Registrationcontroller::class, 'addProduct'])->middleware('admin');

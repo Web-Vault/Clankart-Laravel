@@ -168,7 +168,6 @@
                         <a href="/checkout/{{$single->id}}/{{$single->price}}">Buy Now</a>
                         <a href="{{ route('add-to-wishlist', ['id' => $single->id]) }}">Add to wishlist</a>
                         <a href="{{ route('add-to-cart', ['id' => $single->id]) }}">Add to cart</a>
-                        <a href=" {{ route('chats_with_me', ['seller_id' => $single->id]) }}">Chat with Seller</a>
                     </div>
 
                 @else

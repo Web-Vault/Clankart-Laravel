@@ -159,21 +159,6 @@
                                                 </div>
                                         </a>
 
-
-                                        <a href="{{URL::to('/')}}/chats" class="links">
-                                                <div class="nav-item p-4 d-flex w-100">
-                                                        <div class="nav-icon">
-                                                                <img src="{{URL::to('/')}}/images/chats.png" alt="">
-                                                        </div>
-                                                        <div class="nav-name  w-100  align-items-center">
-                                                                <span class="mx-3 fs-5"> My Chats </span>
-                                                        </div>
-
-                                                </div>
-                                        </a>
-
-
-
                                         <a href="{{URL::to('/')}}/wishlist" class="links">
                                                 <div class="nav-item p-4 d-flex w-100">
                                                         <div class="nav-icon">
@@ -256,11 +241,8 @@
                                 <div class="cart-inner container w-auto d-flex flex-column">
 
                                         @if (isset($orders))
-                                                
                                                 @foreach ($orders as $item)
-
                                                         @if ($item->order_status == 'delivered')
-                                                        
                                                                 <div class="inner-cart-container">
                                                                         <div class="cart-item">
                                                                                 <!-- <div class="item-image">
@@ -268,28 +250,27 @@
                                                                                 </div> -->
                                                                                 <div class="item-details">
                                                                                         <div class="item-info">
-                                                                                                <div class="item-title">{{ $item->book_name }}
-                                                                                                </div>
+                                                                                                <div class="item-title">{{ $item->book_name }}</div>
                                                                                                 <div class="item-order-date">Order Date: {{ $item->order_date }}</div>
                                                                                                 <div class="item-price">Amount: ${{ $item->order_price }}</div>
                                                                                         </div>
                                                                                         <div class="item-actions">
                                                                                                 <div class="item-status">Order Status : {{ $item->order_status }}</div>
-                                                                                                <a href="review-book/{{ $item->book_id }}/{{ $item->id }}">Review</a>
+                                                                                                @if(isset($reviewedOrderIds) && in_array($item->id, $reviewedOrderIds))
+                                                                                                        <span class="text-muted">Order Reviewed</span>
+                                                                                                @else
+                                                                                                        <a href="review-book/{{ $item->book_id }}/{{ $item->id }}">Review</a>
+                                                                                                @endif
                                                                                         </div>
                                                                                 </div>
                                                                         </div>
                                                                 </div>
                                                         @endif
-                                                
                                                 @endforeach
-                                                        
-                                                @else
-                                        
+                                        @else
                                                 <img src="{{URL::to('/')}}/images/noorders.png" alt="Empty" class="img m-auto">
                                                 <p class="p-3 fs-4 m-auto">Sorry you have an empty order list :(</p>
-                                                <button class="btn btn-primary border-primary d-none mb-5 p-3 my-3 d-md-block border rounded-1 m-auto search-btn">Start
-                                                        Buying Now!</button>
+                                                <button class="btn btn-primary border-primary d-none mb-5 p-3 my-3 d-md-block border rounded-1 m-auto search-btn">Start Buying Now!</button>
                                         @endif
 
                                 </div>

@@ -94,24 +94,7 @@
 
                                                             </div>
                                                   </a>
-
-
-                                                  <a href="{{URL::to('/')}}/chats" class="links">
-                                                            <div class="nav-item p-4 d-flex w-100">
-                                                                      <div class="nav-icon">
-                                                                                <img src="{{URL::to('/')}}/images/chats.png"
-                                                                                          alt="">
-                                                                      </div>
-                                                                      <div class="nav-name  w-100 align-items-center">
-                                                                                <span class="mx-3 fs-5"> My Chats
-                                                                                </span>
-                                                                      </div>
-
-                                                            </div>
-                                                  </a>
-
-
-
+                                                  
                                                   <a href="{{URL::to('/')}}/wishlist" class="links">
                                                             <div class="nav-item p-4 d-flex w-100">
                                                                       <div class="nav-icon">

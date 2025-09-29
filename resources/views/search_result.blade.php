@@ -40,7 +40,7 @@
                             <label for="" class="seller">Seller : {{$book->seller_name}}</label><br>
                             <label for="" class="price">₹{{$book->price}}</label><br>
                         </div>
-                        <div class="purchase"><a href="click" class="buy">Purchase Item</a></div>
+                        <div class="purchase"><a href="click/{{$book->id}}" class="buy">Purchase Item</a></div>
                     </div>
                 @endforeach
             @endif

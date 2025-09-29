@@ -40,6 +40,152 @@ class Registrationcontroller extends Controller
         return view('index', compact('images'));
     }
 
+    // OTP-based password reset flow
+    // Render Forgot Password - Request OTP form
+    public function showForgotRequest()
+    {
+        $prefillEmail = optional(Session::get('password_reset'))['email'] ?? '';
+        return view('auth.forgot_request', compact('prefillEmail'));
+    }
+
+    // Render Forgot Password - Verify OTP form
+    public function showForgotVerify()
+    {
+        $prefillEmail = optional(Session::get('password_reset'))['email'] ?? '';
+        return view('auth.forgot_verify', compact('prefillEmail'));
+    }
+
+    // Render Forgot Password - Reset form
+    public function showForgotReset()
+    {
+        $prefillEmail = optional(Session::get('password_reset'))['email'] ?? '';
+        return view('auth.forgot_reset', compact('prefillEmail'));
+    }
+
+    public function requestResetOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $customer = Customer::where('email', $request->email)->first();
+        if (!$customer) {
+            return redirect()->back()->with('error', 'No account found with that email.');
+        }
+
+        // Generate 6-digit OTP and store in session with 10-minute expiry
+        $otp = random_int(100000, 999999);
+        $expiresAt = Carbon::now()->addMinutes(10);
+
+        Session::put('password_reset', [
+            'email' => $customer->email,
+            'otp' => (string)$otp,
+            'expires_at' => $expiresAt->toDateTimeString(),
+            'verified' => false,
+        ]);
+
+        // Send OTP via email using a Blade template
+        $to = $customer->email;
+        $data = [
+            'otp' => $otp,
+            'email' => $to,
+            'expires_minutes' => 10,
+        ];
+        Mail::send('emails.reset_otp', $data, function ($message) use ($to) {
+            $message->to($to)->subject('ClanKart Password Reset OTP');
+        });
+
+        return redirect()->route('password.verify_form')->with('success', 'OTP sent to your email. Please verify.');
+    }
+
+    public function verifyResetOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp' => 'required|digits:6'
+        ]);
+
+        $data = Session::get('password_reset');
+        if (!$data || strtolower($data['email']) !== strtolower($request->email)) {
+            return redirect()->route('password.request_form')->with('error', 'Please request an OTP first.');
+        }
+
+        if (Carbon::now()->gt(Carbon::parse($data['expires_at']))) {
+            Session::forget('password_reset');
+            return redirect()->route('password.request_form')->with('error', 'OTP expired. Please request a new one.');
+        }
+
+        if ($data['otp'] !== $request->otp) {
+            return redirect()->route('password.verify_form')->with('error', 'Invalid OTP.');
+        }
+
+        $data['verified'] = true;
+        Session::put('password_reset', $data);
+
+        return redirect()->route('password.reset_form')->with('success', 'OTP verified. You can now reset your password.');
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6|max:25',
+            'password_confirmation' => 'required|same:password',
+        ]);
+
+        $data = Session::get('password_reset');
+        if (!$data || strtolower($data['email']) !== strtolower($request->email) || empty($data['verified'])) {
+            return redirect()->route('password.verify_form')->with('error', 'OTP verification required before resetting password.');
+        }
+
+        $customer = Customer::where('email', $request->email)->first();
+        if (!$customer) {
+            return redirect()->route('login')->with('error', 'Account not found.');
+        }
+
+        // Update password (plain text to match existing app behavior)
+        $customer->password = $request->password;
+        $customer->save();
+
+        Session::forget('password_reset');
+
+        return redirect()->route('login')->with('success', 'Password reset successful. Please login.');
+    }
+
+
+    public function showSellingOrders(Request $request)
+    {
+        // Ensure user is logged in
+        $sessionEmail = Session::get('customer_email');
+        $user = $sessionEmail ? Customer::where('email', $sessionEmail)->first() : null;
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please login to view your selling orders.');
+        }
+
+        // Fetch all books listed by this user (for filter dropdown)
+        $books = Book::where('seller_id', $user->id)
+            ->select('id', 'book_title')
+            ->orderBy('book_title')
+            ->get();
+
+        $selectedBookId = $request->query('book_id');
+
+        // Fetch orders placed for those books, optionally filtered by a specific book
+        $ordersQuery = order::query()
+            ->when($selectedBookId, function ($q) use ($selectedBookId) {
+                $q->where('book_id', $selectedBookId);
+            }, function ($q) use ($books) {
+                // default: all orders for all seller's books
+                $q->whereIn('book_id', $books->pluck('id'));
+            })
+            ->orderBy('order_date', 'desc');
+
+        $orders = $ordersQuery->get();
+
+        return view('selling-orders', compact('orders', 'books', 'selectedBookId'));
+    }
+
     public function search(Request $request)
     {
         $search = $request->input('searchbar');
@@ -181,15 +327,12 @@ class Registrationcontroller extends Controller
 
     public function update_profile(Request $request)
     {
-        if (Session::has('customer_email')) {
-            $user = Customer::where('email', Session::get('customer_email'))->first();
-            $id = $user->id;
-        }
+        // Fetch logged-in user by session email
+        $sessionEmail = Session::get('customer_email');
+        $user = $sessionEmail ? Customer::where('email', $sessionEmail)->first() : null;
 
-        $profile = Customer::find($id);
-
-        if (!$profile) {
-            return redirect()->back()->with('error', 'Profile not found.');
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please login to update your profile.');
         }
 
         $request->validate([
@@ -201,39 +344,48 @@ class Registrationcontroller extends Controller
             'Address' => 'required|string',
         ]);
 
-        $profile->update([
-            "firstname" => $request->firstname,
-            "lastname" => $request->lastname,
-            "email" => $request->email,
-            "mobile_number" => $request->phone_number,
-            "pincode" => $request->pincode,
-            "address" => $request->Address,
-        ]);
+        $originalEmail = $user->email;
 
-        echo "<script>alert('the profile has been successfully updated!');</script>";
-        return redirect()->route('profile', compact('profile'))->with('success', 'Profile updated successfully.');
+        $user->firstname = $request->firstname;
+        $user->lastname = $request->lastname;
+        $user->email = $request->email;
+        $user->mobile_number = $request->phone_number;
+        $user->pincode = $request->pincode;
+        $user->address = $request->Address;
+        $user->save();
+
+        // Keep session in sync if email changed
+        if ($originalEmail !== $user->email) {
+            Session::put('customer_email', $user->email);
+        }
+
+        return redirect()->route('profile')->with('success', 'Profile updated successfully.');
 
     }
 
-    // public function changePassword(Request $request) {
-    //     $request->validate([
-    //         'password'=>'required',
-    //     ]);
+    public function changePassword(Request $request) {
+        $request->validate([
+            'password' => 'required|min:6|max:25',
+        ]);
 
-    //     $id=12;
-    //     $profile = Customer::find($id);
-    //     $old_password = $profile->password;
+        // Identify the logged-in user
+        $sessionEmail = Session::get('customer_email');
+        $user = $sessionEmail ? Customer::where('email', $sessionEmail)->first() : null;
 
-    //     if($request->password != $old_password) {
-    //         $profile->update([
-    //             'password'=> $request->password,
-    //         ]);
-    //     } else {
-    //         echo "<Script>alert('unable to change your password!');</script>";
-    //     }
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please login to change your password.');
+        }
 
-    //     return view('profile', compact('profile'));
-    // }
+        // If password is same as current, reject; otherwise update
+        if ($request->password === $user->password) {
+            return redirect()->route('profile')->with('error', 'New password must be different from the current password.');
+        }
+
+        $user->password = $request->password; // Note: passwords are stored in plain text in this app
+        $user->save();
+
+        return redirect()->route('profile')->with('success', 'Password changed successfully.');
+    }
 
     // login / signup
 
@@ -375,6 +527,29 @@ class Registrationcontroller extends Controller
         }
     }
 
+    // Allow seller to update their book stock from My Ads
+    public function updateBookStock(Request $request, $book_id)
+    {
+        $request->validate([
+            'stock' => 'required|integer|min:0'
+        ]);
+
+        $user = Customer::where('email', session('customer_email'))->first();
+        if (!$user) {
+            return redirect()->route('login');
+        }
+
+        $book = Book::find($book_id);
+        if (!$book || $book->seller_id !== $user->id) {
+            return redirect()->back()->with('error', 'You are not authorized to update this book.');
+        }
+
+        $book->stock = (int)$request->stock;
+        $book->save();
+
+        return redirect()->back()->with('success', 'Stock updated successfully.');
+    }
+
 
     public function forgotPassword(Request $request)
     {
@@ -443,6 +618,15 @@ class Registrationcontroller extends Controller
         $user = Customer::where('email', session('customer_email'))->first();
         $username = $user->firstname;
 
+        // Validate book existence and stock availability
+        $book = Book::find($request->book_id);
+        if (!$book) {
+            return redirect()->back()->with('error', 'Book not found.');
+        }
+        if ((int)$book->stock <= 0) {
+            return redirect()->back()->with('error', 'This book is sold out.');
+        }
+
         $order_detail->customer_name = $username;
         $order_detail->book_name = $request->bookname;
         $order_detail->order_price = $request->amount;
@@ -453,6 +637,9 @@ class Registrationcontroller extends Controller
         $all_orders = order::all();
 
         if ($order_detail->save()) {
+            // Decrement stock safely
+            $book->stock = max(0, ((int)$book->stock) - 1);
+            $book->save();
 
             $remove_book_from_cart = Cart::where('book_id', $order_detail->book_id);
             $remove_book_from_cart->delete();
@@ -502,7 +689,15 @@ class Registrationcontroller extends Controller
 
             $orders = Order::where('customer_name', $name)->get();
 
-            return view('orders', compact('orders'));
+            // Build list of order IDs already reviewed by this user
+            $reviewedOrderIds = [];
+            if ($user) {
+                $reviewedOrderIds = review::where('customer_id', $user->id)
+                    ->pluck('order_id')
+                    ->toArray();
+            }
+
+            return view('orders', compact('orders', 'reviewedOrderIds'));
         }
 
         return redirect()->back();
@@ -523,6 +718,11 @@ class Registrationcontroller extends Controller
     public function login()
     {
         return view('login');
+    }
+
+    public function register()
+    {
+        return view('register');
     }
 
 
@@ -812,6 +1012,20 @@ class Registrationcontroller extends Controller
     {
         $oid = $order_id;
         $book = Book::find($book_id);
+
+        // Ensure the same user cannot review the same order multiple times
+        $user = Customer::where('email', session('customer_email'))->first();
+        if ($user) {
+            $customerId = $user->id;
+            $alreadyReviewed = review::where('order_id', $oid)
+                ->where('customer_id', $customerId)
+                ->exists();
+
+            if ($alreadyReviewed) {
+                return redirect()->back()->with('error', 'You have already reviewed this order.');
+            }
+        }
+
         return view('book_review_form', compact('book', 'oid'));
     }
 
@@ -832,6 +1046,15 @@ class Registrationcontroller extends Controller
         $user = Customer::where('email', session('customer_email'))->first();
         if ($user) {
             $id = $user->id;
+        }
+
+        // Prevent duplicate reviews for the same order by the same user
+        $alreadyReviewed = review::where('order_id', $oid)
+            ->where('customer_id', $id)
+            ->exists();
+
+        if ($alreadyReviewed) {
+            return redirect()->back()->with('error', 'You have already reviewed this order.');
         }
 
         // Create and save the review
@@ -1078,8 +1301,12 @@ class Registrationcontroller extends Controller
             $name = $user->firstname;
 
             $orders = Order::where('customer_name', $name)->get();
+            // Build list of order IDs already reviewed by this user
+            $reviewedOrderIds = review::where('customer_id', $user->id)
+                ->pluck('order_id')
+                ->toArray();
 
-            return view('orders', compact('orders'));
+            return view('orders', compact('orders', 'reviewedOrderIds'));
         } else {
             return redirect()->back()->with('error', 'Customer not found');
         }
@@ -1087,14 +1314,23 @@ class Registrationcontroller extends Controller
 
     public function showAds()
     {
-
         $user = Customer::where('email', session('customer_email'))->first();
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please login to view your ads.');
+        }
 
         $user_id = $user->id;
 
         $my_books = Book::where('seller_id', $user_id)->get();
 
-        return view('ads', compact('my_books'));
+        // Build a map of book_id => order_count
+        $orderCounts = order::whereIn('book_id', $my_books->pluck('id'))
+            ->selectRaw('book_id, COUNT(*) as cnt')
+            ->groupBy('book_id')
+            ->pluck('cnt', 'book_id');
+
+        return view('ads', compact('my_books', 'orderCounts'));
     }
 
     // remove from user

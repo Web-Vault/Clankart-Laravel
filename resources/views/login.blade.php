@@ -21,15 +21,12 @@
 
 <body>
           <div class="container">
-                    <ul class="nav nav-tabs" id="tabMenu">
-                              <li class="nav-item">
-                                        <a class="nav-link active" id="loginTab">Login</a>
-                              </li>
-                              <li class="nav-item">
-                                        <a class="nav-link" id="signupTab">Signup</a>
-                              </li>
-                    </ul>
-
+                    @if(session('success'))
+                              <div class="alert alert-success mt-3">{{ session('success') }}</div>
+                    @endif
+                    @if(session('error'))
+                              <div class="alert alert-danger mt-3">{{ session('error') }}</div>
+                    @endif
                     <div class="tab-content">
                               <div id="loginForm" class="active">
                                         <h3 class="mb-4">Login</h3>
@@ -53,74 +50,19 @@
                                                                       @enderror
                                                             </span>
                                                   </div>
-                                                  <div class="form-actions">
-                                                            <button type="button" class="btn btn-secondary" id="forgotPasswordLink">Forgot Password?</button>
+                                                  <div class="form-actions d-flex justify-content-between align-items-center">
+                                                            <a href="{{ route('password.request_form') }}" class="btn btn-link p-0">Forgot Password?</a>
                                                             <button type="submit" class="update">Login</button>
                                                   </div>
-                                        </form>
+                                          </form>
                               </div>
 
-                              <!-- Signup Form -->
-                              <div id="signupForm">
-                                        <h3 class="mb-4">Signup</h3>
-                                        <form action="indexSignup" method="post">
-                                                  @csrf
-                                                  <div class="form-group">
-                                                            <label for="signupName">First Name</label>
-                                                            <input type="text" class="form-control" id="signupName" name="signupName" placeholder="Enter first name">
-                                                             <span class="text-danger">
-                                                                      @error('signupName')
-                                                                      {{ $message}}
-                                                                      @enderror
-                                                            </span>
-                                                  </div>
-                                                  <div class="form-group">
-                                                            <label for="signupEmail">Email</label>
-                                                            <input type="email" class="form-control" id="signupEmail" name="signupEmail" placeholder="Enter email">
-                                                             <span class="text-danger">
-                                                                      @error('signupEmail')
-                                                                      {{ $message}}
-                                                                      @enderror
-                                                            </span>
-                                                  </div>
-                                                  <div class="form-group">
-                                                            <label for="signupPassword">Password</label>
-                                                            <input type="password" class="form-control" id="signupPassword" name="signupPassword" placeholder="Enter password">
-                                                             <span class="text-danger">
-                                                                      @error('signupPassword')
-                                                                      {{ $message}}
-                                                                      @enderror
-                                                            </span>
-                                                  </div>
-                                                  <div class="form-group">
-                                                            <label for="signupConfirmPassword">Confirm Password</label>
-                                                            <input type="password" class="form-control" id="signupConfirmPassword" name="signupConfirmPassword" placeholder="Confirm password">
-                                                             <span class="text-danger">
-                                                                      @error('signupConfirmPassword')
-                                                                      {{ $message}}
-                                                                      @enderror
-                                                            </span>
-                                                  </div>
-                                                  <div class="form-actions">
-                                                            <button type="submit" class="update">Signup</button>
-                                                  </div>
-                                        </form>
+                              <div class="mt-4">
+                                        <span>Don't have an account?</span>
+                                        <a href="{{ route('register') }}">Create one</a>
                               </div>
 
-                              <!-- Forgot Password Form -->
-                              <div id="forgotPasswordForm">
-                                        <h3 class="mb-4">Forgot Password</h3>
-                                        <form action="forgotPassword" method="post">
-                                                  @csrf
-                                                  <div class="form-group">
-                                                            <label for="forgotEmail">Email</label>
-                                                            <input type="email" class="form-control" id="forgotEmail" name="forgotEmail" placeholder="Enter your email">
-                                                  </div>
-                                                  <div class="form-actions">
-                                                            <button type="submit" class="update">Submit</button>
-                                                  </div>
-                                        </form>
-                              </div>
+                              <!-- Forgot Password (OTP) moved to separate dedicated pages -->
                     </div>
           </div>
 
@@ -131,40 +73,7 @@
 
 <script>
           document.addEventListener('DOMContentLoaded', function() {
-                    const loginTab = document.getElementById('loginTab');
-                    const signupTab = document.getElementById('signupTab');
-                    const loginForm = document.getElementById('loginForm');
-                    const signupForm = document.getElementById('signupForm');
-                    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
-                    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-
-                    loginTab.addEventListener('click', function() {
-                              showForm('login');
-                    });
-
-                    signupTab.addEventListener('click', function() {
-                              showForm('signup');
-                    });
-
-                    forgotPasswordLink.addEventListener('click', function() {
-                              showForm('forgotPassword');
-                    });
-
-                    forgotPasswordForm.addEventListener('submit', function(event) {
-                              event.preventDefault();
-                              showForm('login');
-                    });
-
-                    function showForm(formType) {
-                              loginForm.style.display = formType === 'login' ? 'block' : 'none';
-                              signupForm.style.display = formType === 'signup' ? 'block' : 'none';
-                              forgotPasswordForm.style.display = formType === 'forgotPassword' ? 'block' : 'none';
-
-                              loginTab.classList.toggle('active', formType === 'login');
-                              signupTab.classList.toggle('active', formType === 'signup');
-                    }
-
-                    showForm('login');
+                    // No tabs anymore; page only contains login form
           });
 </script>
 

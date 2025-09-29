@@ -137,6 +137,12 @@
         transition: color 0.3s;
 }
 
+.view_order_btn:hover {
+        color: #fff !important;   /* force white text */
+        background-color: #0d6efd; /* bootstrap primary blue */
+        border-color: #0d6efd;
+}
+
 .ad-actions a:hover {
         color: #0056b3;
         text-decoration: underline;

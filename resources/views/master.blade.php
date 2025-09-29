@@ -167,17 +167,6 @@
                         </div>
                 </a>
 
-                <a class="link" href="{{URL::to('/')}}/chats">
-                        <div class="profile">
-                                <div class="profile-icon">
-                                        <img src="{{URL::to('/')}}/images/chats.png" alt="categories">
-                                </div>
-                                <div class="user-name">
-                                        <p class="opacity-75 fs-5">My Chats</p>
-                                </div>
-                        </div>
-                </a>
-
                 <a class="link" href="{{URL::to('/')}}/wishlist">
                         <div class="profile">
                                 <div class="profile-icon">
