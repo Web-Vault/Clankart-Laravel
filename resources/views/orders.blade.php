@@ -215,7 +215,7 @@
                                                                         
                                                                                                 // Redirect to the specified URL
                                                                                         window.location.href = `/set_delivered/${order_id}/${delivered}`;
-                                                                                }, 10000);
+                                                                                }, 100);
                                                                         }
                                                                 </script>
 

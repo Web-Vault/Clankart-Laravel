@@ -1,124 +1,93 @@
-.review-page {
-    padding: 20px;
-}
+/* Container */
+.review-page { padding: 20px; }
 
-.content-wrapper {
-    display: flex;
-    gap: 30px;
-}
+/* Header */
+.review-header h1 { color: #111827; }
+.review-header .text-muted { color: #6b7280 !important; }
 
+/* Layout */
+.content-wrapper { display: flex; gap: 30px; }
+
+/* Book info card */
 .book-info {
     width: 35%;
     flex-shrink: 0;
     padding: 20px;
-    background-color: #f0f7ff;
-    border-radius: 8px;
-    text-align: left;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    border: 1px solid #eef2f7;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
 }
+.book-image { width: 100%; height: auto; border-radius: 10px; border: 1px solid #eef2f7; }
+.book-title { font-size: 22px; margin: 10px 0 6px; color: #0d6efd; }
+.book-price { font-size: 16px; margin: 0 0 8px; color: #111827; }
+.book-description { font-size: 14px; color: #6b7280; margin: 0; }
 
-.book-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-}
-
-.book-title {
-    font-size: 24px;
-    margin: 10px 0;
-    color: #004f8c;
-}
-
-.book-price {
-    font-size: 20px;
-    margin: 10px 0;
-    color: #0078d4;
-}
-
-.book-description {
-    font-size: 16px;
-    color: #555;
-    margin: 10px 0;
-}
-
+/* Form card */
 .review-form-container {
     width: 60%;
-    padding: 20px;
+    padding: 24px;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eef2f7;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
+.form-title { font-size: 22px; margin-bottom: 4px; color: #111827; }
+.form-subtitle { font-size: 13px; }
 
-.form-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #004f8c;
-}
-
-.rating-section {
-    margin-bottom: 20px;
-}
-
-.rating-label {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-}
-
+/* Rating */
+.rating-section { margin-bottom: 20px; }
+.rating-label { font-size: 14px; font-weight: 600; color: #374151; }
 .star-rating {
-    display: flex;
-    justify-content: left;
+    display: inline-flex;
+    flex-direction: row-reverse; /* so ~ selector works from left to right */
+    gap: 6px;
 }
-
-.star-rating input[type="radio"] {
-    display: none;
-}
-
+.star-rating input[type="radio"] { display: none; }
 .star-rating label.star {
-    font-size: 30px;
-    color: #0078d4;
+    font-size: 28px;
+    line-height: 1;
+    color: #cbd5e1; /* slate-300 */
     cursor: pointer;
-    transition: color 0.3s ease;
+    transition: color 0.2s ease;
 }
-
-.star-rating input[type="radio"]:checked ~ label.star,
+/* hover fill */
 .star-rating label.star:hover,
-.star-rating input[type="radio"]:checked ~ label.star:hover {
-    color: #f4c542;
-}
+.star-rating label.star:hover ~ label.star { color: #f59e0b; }
+/* selected fill */
+.star-rating input[type="radio"]:checked ~ label.star { color: #f59e0b; }
 
-.review-text-section {
-    margin-bottom: 20px;
-}
-
-.review-text-label {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-}
-
+/* Textarea */
+.review-text-section { margin-bottom: 20px; }
+.review-text-label { font-size: 14px; font-weight: 600; color: #374151; }
 textarea {
     width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    border-radius: 5px;
-    border: 1px solid #0078d4; 
+    padding: 12px;
+    margin-top: 8px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
     font-size: 14px;
     resize: vertical;
-    color: #333;
+    color: #111827;
 }
+textarea:focus { outline: none; border-color: #0d6efd; box-shadow: 0 0 0 3px rgba(13,110,253,0.15); }
 
+/* Submit button */
 .submit-btn {
     display: inline-block;
-    padding: 10px 20px;
-    background-color: #0078d4;
-    border: none;
-    border-radius: 5px;
+    padding: 10px 16px;
+    background-color: #0d6efd;
+    border: 1px solid #0d6efd;
+    border-radius: 8px;
     color: #fff;
     cursor: pointer;
-    margin-top: 15px;
-    transition: background-color 0.3s ease;
+    margin-top: 4px;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
+.submit-btn:hover { background-color: #0b5ed7; box-shadow: 0 4px 12px rgba(13,110,253,0.25); }
 
-.submit-btn:hover {
-    background-color: #005f99; 
+/* Responsive */
+@media (max-width: 992px) {
+    .content-wrapper { flex-direction: column; }
+    .book-info, .review-form-container { width: 100%; }
 }

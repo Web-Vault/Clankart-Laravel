@@ -14,22 +14,21 @@
            <link href="{{ URL::to('/') }}/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- Bootstrap JS -->
-<script src="{{URL::to('/')}}/js/bootstrap.min.js"></script>
 
 <link rel="stylesheet" href="{{URL::to('/')}}/view_css/login.css">
 </head>
 
 <body>
-          <div class="container">
-                    @if(session('success'))
-                              <div class="alert alert-success mt-3">{{ session('success') }}</div>
-                    @endif
-                    @if(session('error'))
-                              <div class="alert alert-danger mt-3">{{ session('error') }}</div>
-                    @endif
+  <div class="container">
                     <div class="tab-content">
                               <div id="loginForm" class="active">
-                                        <h3 class="mb-4">Login</h3>
+                                        <h3 class="mb-3">Login</h3>
+                                        @if(session('success'))
+                                                  <div class="alert alert-success mb-3">{{ session('success') }}</div>
+                                        @endif
+                                        @if(session('error'))
+                                                  <div class="alert alert-danger mb-3">{{ session('error') }}</div>
+                                        @endif
                                         <form action="indexLogin" method="post">
                                                   @csrf
                                                   <div class="form-group">

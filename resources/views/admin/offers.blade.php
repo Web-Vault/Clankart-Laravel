@@ -393,15 +393,28 @@
                                                                 <td class="text-center">{{ $coupon->coupon_code }}</td>
                                                                 <td class="text-center">{{ $coupon->discount_value }}</td> 
                                                                 <td>{{ $coupon->applicable_amount }}</td>
-                                                                <td class="text-center">{{ $coupon->activation_time }}</td>
-                                                                <td class="text-center">{{ $coupon->deactivation_time }}</td>
-                                                                <td><button class="btn btn-primary btn-sm" ondblclick="changestatus()">Active</button></td>
-                                                            </tr> 
-                                                        
+                                                                <td class="text-center">{{ \Carbon\Carbon::parse($coupon->activation_time)->format('d-m-Y H:i') }}</td>
+                                                                <td class="text-center">{{ \Carbon\Carbon::parse($coupon->deactivation_time)->format('d-m-Y H:i') }}</td>
+                                                                @php
+                                                                    $now = \Carbon\Carbon::now();
+                                                                    $start = \Carbon\Carbon::parse($coupon->activation_time);
+                                                                    $end = \Carbon\Carbon::parse($coupon->deactivation_time);
+                                                                    if ($end->lt($now)) {
+                                                                        $statusLabel = 'Expired';
+                                                                        $statusClass = 'badge bg-secondary';
+                                                                    } elseif ($start->gt($now)) {
+                                                                        $statusLabel = 'Inactive';
+                                                                        $statusClass = 'badge bg-warning text-dark';
+                                                                    } else {
+                                                                        $statusLabel = 'Active';
+                                                                        $statusClass = 'badge bg-success';
+                                                                    }
+                                                                @endphp
+                                                                <td class="text-center"><span class="{{ $statusClass }}">{{ $statusLabel }}</span></td>
+                                                            </tr>
                                                             @endforeach
                                                             @endif
                                                             </tbody>
-                                                  </table>
                                                   </table>
                                         </div>
                               </div>

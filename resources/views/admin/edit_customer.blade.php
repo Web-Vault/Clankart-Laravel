@@ -464,6 +464,13 @@
                                         <div class="container mt-5">
                                                   <h2 class="mb-4">Edit User</h2>
 
+                                                  @if(session('success'))
+                                                      <div class="alert alert-success">{{ session('success') }}</div>
+                                                  @endif
+                                                  @if(session('error'))
+                                                      <div class="alert alert-danger">{{ session('error') }}</div>
+                                                  @endif
+
                                                   @if (isset($user))
                                                   
                                                   <form action="{{URL::to('/')}}/edit_user_info" method="post">
@@ -495,7 +502,7 @@
                                                                       <label for="contactNumber">Contact Number</label>
                                                                       <div class="phone-input">
                                                                                 <div class="country-code">+91</div>
-                                                                                <input type="text" class="form-control" id="contactNumber" name="contactNumber" value="{{ $user->mobile_number }}"placeholder="Enter contact number" >
+                                                                                <input type="text" class="form-control" id="contactNumber" name="contactNumber" value="{{ $user->mobile_number }}" placeholder="Enter contact number" >
                                                                                 <span class="text-danger">
                                                                                           @error('contactNumber')
                                                                                           {{ $message}}
@@ -523,42 +530,21 @@
                                                             </div>
                                                             <div class="form-group">
                                                                       <label for="email">Email</label>
-                                                                      <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}"placeholder="Enter email" >
+                                                                      <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}" placeholder="Enter email" >
                                                                       <span class="text-danger">
                                                                                 @error('email')
                                                                                 {{ $message}}
                                                                                 @enderror
                                                                       </span>
                                                             </div>
-                                                            <!-- <div class="password-group">
-                                                                      <div class="password-field form-group">
-                                                                                <label for="password">Password</label>
-                                                                                <input type="password" class="form-control" value="{{ $user->password }}" id="password" name="password" placeholder="Enter password" >
-                                                                                <span class="text-danger">
-                                                                                          @error('password')
-                                                                                          {{ $message}}
-                                                                                          @enderror
-                                                                                </span>
-                                                                      </div>
-                                                                      <div class="password-field form-group">
-                                                                                <label for="confirmPassword">Confirm Password</label>
-                                                                                <input type="password" class="form-control" value="{{ $user->password }}" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" >
-                                                                                <span class="text-danger">
-                                                                                          @error('confirmPassword')
-                                                                                          {{ $message}}
-                                                                                          @enderror
-                                                                                </span>
-                                                                      </div>
-                                                            </div> -->
                                                             <div class="form-actions">
                                                                       <button type="button" class="discard">Discard</button>
-                                                                      <button type="submit" class="update">Add User</button>
+                                                                      <button type="submit" class="update">Update User</button>
                                                             </div>
+
                                                   </form>
                                                   
                                                   @endif
-
-
 
                                         </div>
                               </div>

@@ -20,10 +20,7 @@ Route::post('/search', [Registrationcontroller::class,'search'])->name('search')
 
 Route::get('/', [RegistrationController::class, 'index']);
 
-Route::get('/cart', function () {
-    return view('cart');
-});
-Route::get('/cart', [Registrationcontroller::class,'showCart']);
+Route::get('/cart', [Registrationcontroller::class,'showCart'])->name('cart');
 
 Route::get('add-to-cart/{id}', [Registrationcontroller::class,'add_cart'])->name('add-to-cart');
 
@@ -33,6 +30,7 @@ Route::get('/profile', [Registrationcontroller::class,'showProfile'])->name('pro
 Route::post('/update_profile', [Registrationcontroller::class,'update_profile'])->name('update_profile');
 
 Route::get('/ads', [Registrationcontroller::class, 'showAds'])->name('ads');
+Route::post('/ads/{book_id}/delete', [Registrationcontroller::class, 'delete_ad'])->name('ads.delete');
 
 // Route::get('/wishlist', function () {
 //     return view('wishlist');
@@ -49,14 +47,15 @@ Route::get('/chats', function () {
 Route::get('/chats/{sender}', [Registrationcontroller::class, 'showChats']);
 
 Route::get('/selling-orders', [Registrationcontroller::class, 'showSellingOrders'])->name('selling_orders');
+Route::post('/selling-orders/{order_id}/status', [Registrationcontroller::class, 'update_selling_order_status'])->name('selling_orders.update_status');
 
 
 Route::get('review-book/{book_id}/{order_id}', [Registrationcontroller::class, 'review_book']);
 Route::post('submit-review', [Registrationcontroller::class, 'submit_review'])->name('submit.review');
 
 
-Route::get('remove-cart/{book_id}', [Registrationcontroller::class, 'remove_cart']);
-Route::get('remove-wishlist/{book_id}', [Registrationcontroller::class, 'remove_wishlist']);
+Route::get('remove-cart/{book_id}', [Registrationcontroller::class, 'remove_cart'])->name('remove-cart');
+Route::get('remove-wishlist/{book_id}', [Registrationcontroller::class, 'remove_wishlist'])->name('remove-wishlist');
 
 
 // Route::get('/orders', function () {
@@ -65,7 +64,7 @@ Route::get('remove-wishlist/{book_id}', [Registrationcontroller::class, 'remove_
 
 Route::get('orders', [Registrationcontroller::class,'show_Orders'])->name('orders');
 
-Route::post('make_payment', [Registrationcontroller::class, 'make_payment']);
+Route::post('/make_payment', [Registrationcontroller::class, 'make_payment'])->name('make_payment');
 
 Route::get('post-ad', function () {
     return view('post-ad');
@@ -104,9 +103,7 @@ Route::post('index', function() {
     return view('index');
 });
 
-Route::get('scroll', function() {
-    return view('scroller_form');
-});
+Route::get('scroll', [Registrationcontroller::class, 'show_scroller_form'])->middleware('admin');
 
 
 // 
@@ -146,6 +143,7 @@ Route::get('/chats_with_me/{seller_id}', [Registrationcontroller::class, 'addCha
 
 
 
+Route::post('/payment-success', [Registrationcontroller::class, 'paymentSuccess']);
 
 
 
@@ -196,6 +194,9 @@ Route::get('/set_delivered/{order_id}/{delivered}', [Registrationcontroller::cla
 
 Route::get('a-product', [Registrationcontroller::class, 'showProduct'])->middleware('admin');
 Route::get('a-customer', [Registrationcontroller::class, 'showCustomer'])->middleware('admin');
+
+// remove scroller image (admin)
+Route::get('remove-scroller/{id}', [Registrationcontroller::class, 'remove_scroller'])->middleware('admin');
 
 Route::get('a-main-report', function () {
     return view('admin/main-report');

@@ -40,6 +40,36 @@ class Registrationcontroller extends Controller
         return view('index', compact('images'));
     }
 
+    // Delete a seller's own ad (book) from My Ads
+    public function delete_ad($book_id)
+    {
+        // Ensure user is logged in
+        $sessionEmail = Session::get('customer_email');
+        $user = $sessionEmail ? Customer::where('email', $sessionEmail)->first() : null;
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please login to manage your ads.');
+        }
+
+        $book = Book::find($book_id);
+        if (!$book || (int) $book->seller_id !== (int) $user->id) {
+            return redirect()->back()->with('error', 'You are not authorized to delete this ad.');
+        }
+
+        // Delete image file if exists
+        $imagePath = $book->book_image; // stored like "/product_image/filename.jpg"
+        if (!empty($imagePath)) {
+            $fullPath = public_path($imagePath);
+            if (File::exists($fullPath)) {
+                File::delete($fullPath);
+            }
+        }
+
+        $book->delete();
+
+        return redirect()->route('ads')->with('success', 'Ad deleted successfully.');
+    }
+
     // OTP-based password reset flow
     // Render Forgot Password - Request OTP form
     public function showForgotRequest()
@@ -79,7 +109,7 @@ class Registrationcontroller extends Controller
 
         Session::put('password_reset', [
             'email' => $customer->email,
-            'otp' => (string)$otp,
+            'otp' => (string) $otp,
             'expires_at' => $expiresAt->toDateTimeString(),
             'verified' => false,
         ]);
@@ -184,6 +214,36 @@ class Registrationcontroller extends Controller
         $orders = $ordersQuery->get();
 
         return view('selling-orders', compact('orders', 'books', 'selectedBookId'));
+    }
+
+    // Seller can update status of orders for their own books
+    public function update_selling_order_status(Request $request, $order_id)
+    {
+        $request->validate([
+            'status' => 'required|in:confirmed,delivered'
+        ]);
+
+        $sessionEmail = Session::get('customer_email');
+        $seller = $sessionEmail ? Customer::where('email', $sessionEmail)->first() : null;
+        if (!$seller) {
+            return redirect()->route('login')->with('error', 'Please login to manage orders.');
+        }
+
+        $ord = order::find($order_id);
+        if (!$ord) {
+            return redirect()->back()->with('error', 'Order not found.');
+        }
+
+        // Ensure this order belongs to a book owned by this seller
+        $book = Book::find($ord->book_id);
+        if (!$book || (int) $book->seller_id !== (int) $seller->id) {
+            return redirect()->back()->with('error', 'You are not authorized to update this order.');
+        }
+
+        $ord->order_status = $request->status;
+        $ord->save();
+
+        return redirect()->back()->with('success', 'Order marked as ' . $request->status . '.');
     }
 
     public function search(Request $request)
@@ -363,7 +423,8 @@ class Registrationcontroller extends Controller
 
     }
 
-    public function changePassword(Request $request) {
+    public function changePassword(Request $request)
+    {
         $request->validate([
             'password' => 'required|min:6|max:25',
         ]);
@@ -425,7 +486,7 @@ class Registrationcontroller extends Controller
                     return view('login');
                 }
             } else {
-                return view('login')->with('error', 'Invalid email or password.');
+                return redirect()->route('login')->with('error', 'Invalid email or password.');
             }
         }
 
@@ -439,11 +500,11 @@ class Registrationcontroller extends Controller
                 return redirect()->route('a-index');
 
             } else {
-                return view('login')->with('error', 'Invalid email or password.');
+                return redirect()->route('login')->with('error', 'Invalid email or password.');
             }
         }
 
-        return view('login')->with('error', 'Invalid email or password.');
+        return redirect()->route('login')->with('error', 'Invalid email or password.');
 
 
 
@@ -504,7 +565,7 @@ class Registrationcontroller extends Controller
         }
 
         // return view('login');
-    }    
+    }
 
     public function verify_email($email, $token)
     {
@@ -544,7 +605,7 @@ class Registrationcontroller extends Controller
             return redirect()->back()->with('error', 'You are not authorized to update this book.');
         }
 
-        $book->stock = (int)$request->stock;
+        $book->stock = (int) $request->stock;
         $book->save();
 
         return redirect()->back()->with('success', 'Stock updated successfully.');
@@ -613,6 +674,11 @@ class Registrationcontroller extends Controller
 
     public function make_payment(Request $request)
     {
+        // Ensure Razorpay payment was completed client-side
+        if (!$request->filled('razorpay_payment_id')) {
+            return redirect()->back()->with('error', 'Payment was not completed. Please try again.');
+        }
+
         $order_detail = new order();
 
         $user = Customer::where('email', session('customer_email'))->first();
@@ -623,7 +689,7 @@ class Registrationcontroller extends Controller
         if (!$book) {
             return redirect()->back()->with('error', 'Book not found.');
         }
-        if ((int)$book->stock <= 0) {
+        if ((int) $book->stock <= 0) {
             return redirect()->back()->with('error', 'This book is sold out.');
         }
 
@@ -638,7 +704,7 @@ class Registrationcontroller extends Controller
 
         if ($order_detail->save()) {
             // Decrement stock safely
-            $book->stock = max(0, ((int)$book->stock) - 1);
+            $book->stock = max(0, ((int) $book->stock) - 1);
             $book->save();
 
             $remove_book_from_cart = Cart::where('book_id', $order_detail->book_id);
@@ -817,39 +883,36 @@ class Registrationcontroller extends Controller
 
     public function edit_user_info(Request $request)
     {
-
-        $id = $request->id;
+        $id = (int) $request->id;
 
         $user = Customer::find($id);
-
         if (!$user) {
             return redirect()->back()->with('error', 'User not found!');
         }
 
+        // Validate using field names from the admin edit form
         $request->validate([
-            'id' => 'required',
-            'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
+            'id' => 'required|integer',
+            'firstName' => 'required|string|max:255',
+            'lastName' => 'required|string|max:255',
+            'contactNumber' => 'nullable|string|max:20',
             'email' => 'required|email|max:255|unique:customers,email,' . $id,
             'address' => 'nullable|string|max:255',
             'pincode' => 'nullable|string|max:10',
         ]);
 
-
-        $user->firstname = $request->firstname;
-        $user->lastname = $request->lastname;
+        $user->firstname = $request->firstName;
+        $user->lastname = $request->lastName;
+        $user->mobile_number = $request->contactNumber;
         $user->email = $request->email;
         $user->address = $request->address;
         $user->pincode = $request->pincode;
 
-
         if ($user->save()) {
-            $all_customer = Customer::all();
-            return view('admin/customer', compact('all_customer'));
-        } else {
-            echo "<script>alert('error in updating ! ');</script>";
-            return redirect()->back()->with('error', 'Failed to update user information.');
+            return redirect()->back()->with('success', 'User details updated successfully.');
         }
+
+        return redirect()->back()->with('error', 'Failed to update user information.');
     }
 
     public function addProduct(Request $request)
@@ -1174,7 +1237,15 @@ class Registrationcontroller extends Controller
     public function admin_index()
     {
         $orders = order::where('order_status', 'pending')->get();
-        return view('admin/index', compact('orders'));
+        $images = Carousel_images::all();
+        return view('admin/index', compact('orders', 'images'));
+    }
+
+    // Show scroller upload form with existing images
+    public function show_scroller_form()
+    {
+        $images = Carousel_images::all();
+        return view('scroller_form', compact('images'));
     }
 
 
@@ -1188,6 +1259,8 @@ class Registrationcontroller extends Controller
         $all_customer = Customer::all();
         return view('admin/customer', compact('all_customer'));
     }
+
+    
 
     public function removeBook($id)
     {
@@ -1210,7 +1283,7 @@ class Registrationcontroller extends Controller
             $book->stock = $book->stock - 1;
         }
 
-
+        $book->save();
         $confirmedOrders = order::where('order_status', 'confirmed')->get();
         return view('admin/orders', compact('confirmedOrders'));
     }
@@ -1353,9 +1426,7 @@ class Registrationcontroller extends Controller
         }
 
         $cart_items = Cart::where('customer_id', $customer_id)->get();
-
-        return view('cart', compact('cart_items'));
-
+        return redirect()->route('cart', compact('cart_items'));
     }
 
 
@@ -1469,6 +1540,24 @@ class Registrationcontroller extends Controller
         }
     }
 
+    // Remove a scroller image (admin)
+    public function remove_scroller($id)
+    {
+        $image = carousel_images::find($id);
+        if (!$image) {
+            return redirect()->back()->with('error', 'Scroller image not found.');
+        }
+
+        $path = public_path($image->scroller_image);
+        if ($path && File::exists($path)) {
+            File::delete($path);
+        }
+
+        $image->delete();
+
+        return redirect()->back()->with('success', 'Scroller image removed successfully.');
+    }
+
 
 
 
@@ -1554,6 +1643,26 @@ class Registrationcontroller extends Controller
     }
 
 
+    public function paymentSuccess(Request $request)
+{
+    $paymentId = $request->razorpay_payment_id;
+    $amount = $request->amount;
+    $book = $request->bookname;
+
+    // Save payment to DB, mark order as paid, etc.
+    // Example:
+    DB::table('payments')->insert([
+        'payment_id' => $paymentId,
+        'amount' => $amount,
+        'book' => $book,
+        'created_at' => now(),
+    ]);
+
+    return redirect()->back()->with('success', 'Payment Successful!');
+}
+
+
+
     public function success()
     {
         return "payment successfull";
@@ -1564,190 +1673,4 @@ class Registrationcontroller extends Controller
         return "payment cancelled";
     }
 
-
-
-
-
-
-
-
-    // chatting
-
-    // public function showChats()
-    // {
-
-    //     return view('chats');
-    // }
-
-  
-    // public function storeMessage(Request $request)
-    // {
-    //     $request->validate([
-    //         'message' => 'required_without:attachment|string',
-    //         'attachment' => 'nullable|image|mimes:jpeg,png,jpg,gif',
-    //         'sender_id' => 'required|integer',
-    //         'receiver_id' => 'required|integer'
-    //     ]);
-
-    //     $attachmentPath = null;
-
-    //     if ($request->hasFile('attachment')) {
-    //         $file = $request->file('attachment');
-
-    //         $fileName = time() . '_' . $file->getClientOriginalName();
-    //         $file->move(public_path('attachments'), $fileName);
-
-    //         // Save the relative path for web access
-    //         $attachmentPath = 'attachments/' . $fileName;
-    //     }
-
-    //     // Create and save the message
-    //     $messages = new Message();
-    //     $messages->sender_id = $request->input('sender_id');
-    //     $messages->receiver_id = $request->input('receiver_id');
-    //     $messages->message = $request->input('message');
-    //     $messages->attachment = $attachmentPath;
-    //     $messages->save();
-
-
-    //     return view('chats', compact('messages'));
-    // }
-
-
-
-
-    // new chats
-
-    // public function showChats()
-    // {
-    //     $user = Customer::where('email', session('customer_email'))->first();
-    //     $my_user_id = $user->id;
-
-    //     // Get all chat partners where the user is either sender or receiver
-    //     $chat_partners = chat_partner::where('sender_id', $my_user_id)
-    //         ->orWhere('receiver_id', $my_user_id)
-    //         ->get();
-
-    //     // Map chat partners to include the "other" person's details
-    //     $partners = $chat_partners->map(function ($chat) use ($my_user_id) {
-    //         $other_user_id = ($chat->sender_id === $my_user_id) ? $chat->receiver_id : $chat->sender_id;
-    //         $other_user = Customer::find($other_user_id); // Fetch the other user's details
-    //         return [
-    //             'chat_id' => $chat->id,
-    //             'other_user' => $other_user
-    //         ];
-    //     });
-
-    //     return view('chats', compact('partners'));
-    // }
-
-    // public function message_with_person()
-    // {
-    //     return view('message_with_person');
-    // }
-
-    // public function add_chat_partners($seller_id)
-    // {
-    //     $receiver = $seller_id;
-
-    //     $user = Customer::where('email', session('customer_email'))->first();
-    //     $sender = $user->id;
-
-    //     $existing_chat_partner = chat_partner::where('sender_id', $sender)
-    //         ->where('receiver_id', $receiver)
-    //         ->first();
-
-    //     if (!$existing_chat_partner) {
-    //         $chat_partners = new chat_partner();
-    //         $chat_partners->sender_id = $sender;
-    //         $chat_partners->receiver_id = $receiver;
-
-    //         $chat_partners->save();
-    //     }
-
-    //     return redirect()->route('message_with_person');
-    // }
-
-
-
-    // 
-
-
-
-public function showChats()
-    {
-        $user = Customer::where('email', session('customer_email'))->first();
-        $my_user_id = $user->id;
-
-        $chat_partners = ChatPartner::where('sender_id', $my_user_id)
-            ->orWhere('receiver_id', $my_user_id)
-            ->with(['sender', 'receiver'])
-            ->get();
-
-        $partners = $chat_partners->map(function ($chat) use ($my_user_id) {
-            $other_user = $chat->sender_id === $my_user_id ? $chat->receiver : $chat->sender;
-            return [
-                'chat_id' => $chat->id,
-                'other_user' => $other_user,
-            ];
-        });
-
-        return view('chats', compact('partners'));
-    }
-
-    public function messageWithPerson($partner_id)
-    {
-        $user = Customer::where('email', session('customer_email'))->first();
-        $my_user_id = $user->id;
-
-        $messages = ChatMessage::where(function ($query) use ($my_user_id, $partner_id) {
-            $query->where('sender_id', $my_user_id)->where('receiver_id', $partner_id);
-        })->orWhere(function ($query) use ($my_user_id, $partner_id) {
-            $query->where('sender_id', $partner_id)->where('receiver_id', $my_user_id);
-        })->get();
-
-        return view('message_with_person', compact('messages', 'partner_id'));
-    }
-
-    public function sendMessage(Request $request)
-    {
-        $request->validate([
-            'message' => 'nullable|string',
-            'attachment' => 'nullable|file|mimes:jpg,png',
-        ]);
-
-        $user = Customer::where('email', session('customer_email'))->first();
-
-        $chatMessage = new ChatMessage();
-        $chatMessage->sender_id = $user->id;
-        $chatMessage->receiver_id = $request->partner_id;
-        $chatMessage->message = $request->message;
-
-        if ($request->hasFile('attachment')) {
-            $filePath = $request->file('attachment')->store('uploads');
-            $chatMessage->attachment = $filePath;
-        }
-
-        $chatMessage->save();
-
-        $messages = ChatMessage::where('sender_id', $user->id)
-            ->orWhere('receiver_id', $user->id)
-            ->get();
-
-        $messages_html = view('partials.messages', compact('messages'))->render();
-
-        return response()->json(['messages_html' => $messages_html]);
-    }
-
-    public function addChatPartners($seller_id)
-    {
-        $user = Customer::where('email', session('customer_email'))->first();
-
-        ChatPartner::firstOrCreate([
-            'sender_id' => $user->id,
-            'receiver_id' => $seller_id,
-        ]);
-
-        return redirect()->route('message_with_person', ['partner_id' => $seller_id]);
-    }
 }

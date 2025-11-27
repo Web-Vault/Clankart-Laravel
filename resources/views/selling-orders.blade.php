@@ -120,6 +120,12 @@
                                                 </form>
                                             @endif
                                         </p>
+                                        @if(session('success'))
+                                            <div class="alert alert-success mx-3">{{ session('success') }}</div>
+                                        @endif
+                                        @if(session('error'))
+                                            <div class="alert alert-danger mx-3">{{ session('error') }}</div>
+                                        @endif
 
                                         <div class="cart-inner container w-auto d-flex flex-column">
                                             @if(isset($orders) && $orders->count() > 0)
@@ -131,6 +137,7 @@
                                                                 <th>Book</th>
                                                                 <th>Amount</th>
                                                                 <th>Status</th>
+                                                                <th>Actions</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -144,7 +151,39 @@
                                                                             {{ ucfirst($order->order_status) }}
                                                                         </span>
                                                                     </td>
+                                                                    <td>
+                                                                        @php $isPending = ($order->order_status === 'pending'); @endphp
+                                                                        <div class="d-flex gap-2">
+                                                                            @if($isPending)
+                                                                                <form action="{{ route('selling_orders.update_status', ['order_id' => $order->id]) }}" method="post" onsubmit="return confirm('Confirm this order?');">
+                                                                                    @csrf
+                                                                                    <input type="hidden" name="status" value="confirmed">
+                                                                                    <button type="submit" class="btn btn-sm btn-outline-success">Confirm</button>
+                                                                                </form>
+                                                                            @endif
+                                                                            @if($order->order_status !== 'delivered')
+                                                                                <form action="{{ route('selling_orders.update_status', ['order_id' => $order->id]) }}" method="post" onsubmit="return confirm('Mark this order as delivered?');">
+                                                                                    @csrf
+                                                                                    <input type="hidden" name="status" value="delivered">
+                                                                                    <button type="submit" class="btn btn-sm btn-outline-primary">Mark Delivered</button>
+                                                                                </form>
+                                                                            @endif
+                                                                        </div>
+                                                                    </td>
                                                                 </tr>
+
+                                                                <script>
+                                                                        if ("{{ $order->order_status }}" === 'confirmed') {
+                                                                                setTimeout(() => {
+                                                                                        const delivered = "delivered";
+                                                                                        const order_id = {{ $order->id }};
+                                                                        
+                                                                                                // Redirect to the specified URL
+                                                                                        window.location.href = `/set_delivered/${order_id}/${delivered}`;
+                                                                                }, 100);
+                                                                        }
+                                                                </script>
+
                                                             @endforeach
                                                         </tbody>
                                                     </table>

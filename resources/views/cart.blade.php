@@ -49,7 +49,7 @@
                                                                         <div class="item-seller">Seller: {{ $cart->seller_name }}</div>
                                                                         <div class="item-actions">
                                                                                 <a href="add-to-wishlist/{{ $cart->book_id }}">MOVE TO WISHLIST</a>
-                                                                                <a href="remove-cart/{{ $cart->book_id }}">REMOVE</a>
+                                                                                <a href="{{ route('remove-cart', $cart->book_id) }}">REMOVE</a>
                                                                         </div>                                                                          
                                                                 </div>                                                                          
                                                                 <div class="price-details">
